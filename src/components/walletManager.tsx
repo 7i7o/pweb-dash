@@ -62,7 +62,7 @@ const WalletManager: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto mt-10">
+    <div className="container mx-auto mt-0">
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* createWallet() */}
         <div className="col-span-1">

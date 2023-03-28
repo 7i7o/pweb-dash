@@ -4,30 +4,30 @@
 import { type CreateWalletReturnProps } from "permawebjs/dist/types/wallet";
 import React, { createContext, useContext, useState } from "react";
 
+const ENV = "local";
+// const ENV = "mainnet";
 interface Props {
   children: React.ReactNode;
 }
 interface IPWebContext {
   wallet: CreateWalletReturnProps | null;
   setWallet: (wallet: CreateWalletReturnProps | null) => void;
+  environment: "local" | "mainnnet";
 }
 
-const defaultState = {
+const PWebContext = createContext<IPWebContext>({
   wallet: null,
   setWallet: () => {
     return null;
   },
-};
-
-const PWebContext = createContext<IPWebContext>(defaultState);
+  environment: ENV,
+});
 
 export const PWebProvider: React.FC<Props> = ({ children }) => {
-  const [wallet, setWallet] = useState<CreateWalletReturnProps | null>(
-    defaultState.wallet
-  );
+  const [wallet, setWallet] = useState<CreateWalletReturnProps | null>(null);
 
   return (
-    <PWebContext.Provider value={{ wallet, setWallet }}>
+    <PWebContext.Provider value={{ wallet, setWallet, environment: ENV }}>
       {children}
     </PWebContext.Provider>
   );
