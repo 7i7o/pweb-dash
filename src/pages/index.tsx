@@ -1,11 +1,19 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import EnvironmentToggle from "~/components/environmentToggle";
-import TxManager from "~/components/txManager";
-import WalletManager from "~/components/walletManager";
-import { PWebProvider } from "~/context/pweb";
+import { useState } from "react";
+import Auth from "~/components/auth";
+import WalletAndTxs from "~/components/walletAndTxs";
+
+const tabs = [
+  "Wallet & Txs",
+  "Auth (ArConnect)",
+  "Smart Contracts",
+  "Serverless Functions (EXM)",
+];
 
 const Home: NextPage = () => {
+  const [active, setActive] = useState<string | undefined>(tabs[0]);
+
   return (
     <>
       <Head>
@@ -20,24 +28,23 @@ const Home: NextPage = () => {
             <span className="text-[white]">JS</span>{" "}
             <span className="text-[purple]">Dash</span>
           </h1>
-          <PWebProvider>
-            <h2 className="text-3xl font-extrabold tracking-tight text-white drop-shadow-md sm:text-[3rem]">
-              Environment
-            </h2>
-            <EnvironmentToggle />
-            <h2 className="text-3xl font-extrabold tracking-tight text-white drop-shadow-md sm:text-[3rem]">
-              Wallets
-            </h2>
-            <div className="grid grid-rows-1 justify-items-center">
-              <WalletManager />
-            </div>
-            <h2 className="text-3xl font-extrabold tracking-tight text-white drop-shadow-md sm:text-[3rem]">
-              Transactions
-            </h2>
-            <div className="grid grid-rows-1 gap-4 sm:grid-rows-2 md:gap-8">
-              <TxManager />
-            </div>
-          </PWebProvider>
+          <div className="tabs tabs-boxed">
+            {tabs.map((tab, i) => {
+              return (
+                <a
+                  className={`tab ${active === tab ? "tab-active" : ""}`}
+                  onClick={() => setActive(tab)}
+                  key={i}
+                >
+                  {tab}
+                </a>
+              );
+            })}
+          </div>
+          {active === tabs[0] && <WalletAndTxs />}
+          {active === tabs[1] && <Auth />}
+          {/* {active === tabs[2] && <SmartContracts />} */}
+          {/* {active === tabs[3] && <EXM />} */}
         </div>
       </main>
     </>
