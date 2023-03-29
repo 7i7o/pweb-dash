@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { usePWebContext } from "~/context/pweb";
 import {
   createTransaction,
@@ -112,6 +112,19 @@ const TxManager: React.FC = () => {
     }
   };
 
+  function resetTx(): React.MouseEventHandler<HTMLButtonElement> | undefined {
+    return () => {
+      setClickedSign(false);
+      setClickedCreate(false);
+      setClickedPost(false);
+      setClickedTxStatus(false);
+      setTx(null);
+      setSignedTx(null);
+      setPostedTx(null);
+      setTxStatus(null);
+    };
+  }
+
   const handleAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
     let result = e.target.value.replace(/\D/g, "");
     if (result) {
@@ -123,6 +136,12 @@ const TxManager: React.FC = () => {
   const handleTarget = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTarget(e.target.value);
   };
+
+  useEffect(() => {
+    if (wallet === null) {
+      resetTx();
+    }
+  }, [wallet]);
 
   return (
     <div className="container mx-auto mt-0">
@@ -190,10 +209,7 @@ const TxManager: React.FC = () => {
                     <button
                       className="btn col-span-1 mx-1 w-full"
                       disabled={!wallet || !clickedCreate || !tx}
-                      onClick={() => {
-                        setClickedCreate(false);
-                        // setAmount("0");
-                      }}
+                      onClick={resetTx()}
                     >
                       Reset
                     </button>
@@ -220,11 +236,7 @@ const TxManager: React.FC = () => {
                         !clickedSign ||
                         !signedTx
                       }
-                      onClick={() => {
-                        setClickedSign(false);
-                        setClickedCreate(false);
-                        // setAmount("0");
-                      }}
+                      onClick={resetTx()}
                     >
                       Reset
                     </button>
