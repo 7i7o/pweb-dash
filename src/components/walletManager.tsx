@@ -96,6 +96,16 @@ const WalletManager: React.FC = () => {
                       <code>{wallet.seedPhrase}</code>
                     </p>
                   )} */}
+                  <button
+                    className="btn-outline btn-sm btn w-full"
+                    disabled={!clicked}
+                    onClick={() => {
+                      setClicked(false);
+                      setWallet(null);
+                    }}
+                  >
+                    Discard
+                  </button>
                 </>
               )}
             </div>
@@ -151,7 +161,7 @@ const WalletManager: React.FC = () => {
           </button>
         </div>
         <div className="col-span-1">
-          {clickedBalance && (
+          {wallet && clickedBalance && (
             <div className="card rounded-lg bg-base-200 p-4">
               {!balance && <progress className="progress w-56"></progress>}
               {balance && (
