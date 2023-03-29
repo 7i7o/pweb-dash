@@ -1,5 +1,6 @@
 import { type NextPage } from "next";
 import Head from "next/head";
+import EnvironmentToggle from "~/components/environmentToggle";
 import TxManager from "~/components/txManager";
 import WalletManager from "~/components/walletManager";
 import { PWebProvider } from "~/context/pweb";
@@ -20,6 +21,10 @@ const Home: NextPage = () => {
             <span className="text-[purple]">Dash</span>
           </h1>
           <PWebProvider>
+            <h2 className="text-3xl font-extrabold tracking-tight text-white drop-shadow-md sm:text-[3rem]">
+              Environment
+            </h2>
+            <EnvironmentToggle />
             <h2 className="text-3xl font-extrabold tracking-tight text-white drop-shadow-md sm:text-[3rem]">
               Wallets
             </h2>

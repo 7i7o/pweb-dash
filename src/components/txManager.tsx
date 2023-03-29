@@ -6,11 +6,11 @@ import {
   signTransaction,
 } from "permawebjs/transaction";
 
-const ENVIRONMENT = "local";
+// const ENVIRONMENT = "local";
 const TARGET_ADDRESS = "g8ZQPMSUnp-cqhMmRW5aSVa2GGop_yRQ0xyZ5DeIaBk";
 
 const TxManager: React.FC = () => {
-  const { wallet } = usePWebContext();
+  const { wallet, env } = usePWebContext();
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const [tx, setTx] = useState<any | null>(null);
@@ -38,7 +38,7 @@ const TxManager: React.FC = () => {
               e: "",
               n: "",
             },
-        environment: ENVIRONMENT,
+        environment: env === "mainnet" ? "mainnet" : "local",
         // options: {
         //   signAndPost: true,
         // },
@@ -63,7 +63,7 @@ const TxManager: React.FC = () => {
               e: "",
               n: "",
             },
-        environment: ENVIRONMENT,
+        environment: env === "mainnet" ? "mainnet" : "local",
       });
       setSignedTx(signPromise);
     } catch {
@@ -85,7 +85,7 @@ const TxManager: React.FC = () => {
               e: "",
               n: "",
             },
-        environment: ENVIRONMENT,
+        environment: env === "mainnet" ? "mainnet" : "local",
       });
       setPostedTx(postPromise);
     } catch {
@@ -161,80 +161,110 @@ const TxManager: React.FC = () => {
               {!tx && <progress className="progress w-56"></progress>}
               {tx && (
                 <div className="grid grid-cols-2 gap-1">
+                  {!clickedSign && (
+                    <button
+                      className="btn col-span-1 mx-1 w-full"
+                      disabled={!wallet || !clickedCreate || !tx}
+                      onClick={() => {
+                        setClickedCreate(false);
+                        // setAmount("0");
+                      }}
+                    >
+                      Reset
+                    </button>
+                  )}
+                  {!clickedSign && (
+                    <button
+                      className="btn-primary btn col-span-1 mx-1 w-full"
+                      disabled={!wallet || !clickedCreate || !tx}
+                      onClick={() => {
+                        setClickedSign(true);
+                        void signTx();
+                      }}
+                    >
+                      {!clickedSign ? "Sign" : "Post"}
+                    </button>
+                  )}
+                  {clickedSign && (
+                    <button
+                      className="btn col-span-1 mx-1 w-full"
+                      disabled={
+                        !wallet ||
+                        !clickedCreate ||
+                        !tx ||
+                        !clickedSign ||
+                        !signedTx
+                      }
+                      onClick={() => {
+                        setClickedSign(false);
+                        setClickedCreate(false);
+                        // setAmount("0");
+                      }}
+                    >
+                      Reset
+                    </button>
+                  )}
+                  {clickedSign && (
+                    <button
+                      className="btn-primary btn col-span-1 mx-1 w-full"
+                      disabled={
+                        !wallet ||
+                        !clickedCreate ||
+                        !tx ||
+                        !clickedSign ||
+                        !signedTx
+                      }
+                      onClick={() => {
+                        setClickedPost(true);
+                        void postTx();
+                      }}
+                    >
+                      Post
+                    </button>
+                  )}
                   <p className="col-span-2">
-                    Your tx:
-                    <br />
-                    <strong className="break-all">{JSON.stringify(tx)}</strong>
-                  </p>
-                  <button
-                    className="btn col-span-1 mx-1 w-full"
-                    disabled={!wallet || !clickedCreate || !tx}
-                    onClick={() => {
-                      setClickedCreate(false);
-                      // setAmount("0");
-                    }}
-                  >
-                    Reset
-                  </button>
-                  <button
-                    className="btn-primary btn col-span-1 mx-1 w-full"
-                    disabled={!wallet || !clickedCreate || !tx}
-                    onClick={() => {
-                      setClickedSign(true);
-                      void signTx();
-                    }}
-                  >
-                    Sign
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
-          {clickedSign && (
-            <div className="card rounded-lg bg-base-200 p-4">
-              {!signedTx && <progress className="progress w-56"></progress>}
-              {signedTx && (
-                <div className="grid grid-cols-2 gap-1">
-                  <p className="col-span-2">
-                    Your Signed tx:
-                    <br />
+                    Tx Id:{" "}
                     <strong className="break-all">
-                      {JSON.stringify(signedTx)}
+                      {
+                        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                        tx?.id
+                      }
                     </strong>
+                    <br />
+                    Target:{" "}
+                    <strong className="break-all">
+                      {
+                        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                        tx?.target
+                      }
+                    </strong>
+                    <br />
+                    Quantity:{" "}
+                    <strong className="break-all">
+                      {
+                        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                        tx?.quantity
+                      }
+                    </strong>
+                    <br />
+                    Data Size:{" "}
+                    <strong className="break-all">
+                      {
+                        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                        tx?.data_size
+                      }
+                    </strong>
+                    <br />
+                    Signature:{" "}
+                    <strong className="break-all">
+                      {
+                        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                        tx?.signature
+                      }
+                    </strong>
+                    {/* <br />
+                    <strong className="break-all">{JSON.stringify(tx)}</strong> */}
                   </p>
-                  <button
-                    className="btn col-span-1 mx-1 w-full"
-                    disabled={
-                      !wallet ||
-                      !clickedCreate ||
-                      !tx ||
-                      !clickedSign ||
-                      !signedTx
-                    }
-                    onClick={() => {
-                      setClickedSign(false);
-                      setClickedCreate(false);
-                      // setAmount("0");
-                    }}
-                  >
-                    Reset
-                  </button>
-                  <button
-                    className="btn-primary btn col-span-1 mx-1 w-full"
-                    disabled={
-                      !wallet ||
-                      !clickedCreate ||
-                      !tx ||
-                      !clickedSign ||
-                      !signedTx
-                    }
-                    onClick={() => {
-                      setClickedPost(true);
-                      void postTx();
-                    }}
-                  >
-                    Post
-                  </button>
                 </div>
               )}
             </div>

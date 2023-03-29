@@ -12,7 +12,8 @@ interface Props {
 interface IPWebContext {
   wallet: CreateWalletReturnProps | null;
   setWallet: (wallet: CreateWalletReturnProps | null) => void;
-  environment: "local" | "mainnnet";
+  env: string;
+  setEnv: (env: string) => void;
 }
 
 const PWebContext = createContext<IPWebContext>({
@@ -20,14 +21,18 @@ const PWebContext = createContext<IPWebContext>({
   setWallet: () => {
     return null;
   },
-  environment: ENV,
+  env: ENV,
+  setEnv: () => {
+    return null;
+  },
 });
 
 export const PWebProvider: React.FC<Props> = ({ children }) => {
   const [wallet, setWallet] = useState<CreateWalletReturnProps | null>(null);
+  const [env, setEnv] = useState<string>(ENV);
 
   return (
-    <PWebContext.Provider value={{ wallet, setWallet, environment: ENV }}>
+    <PWebContext.Provider value={{ wallet, setWallet, env, setEnv }}>
       {children}
     </PWebContext.Provider>
   );

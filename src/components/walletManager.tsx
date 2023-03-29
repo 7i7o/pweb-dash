@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import { createWallet, getAddress, getBalance } from "permawebjs/wallet";
 import { usePWebContext } from "~/context/pweb";
 
-const ENVIRONMENT = "local";
+// const ENVIRONMENT = "local";
 
 const WalletManager: React.FC = () => {
-  const { wallet, setWallet } = usePWebContext();
+  const { wallet, setWallet, env } = usePWebContext();
 
   const [derivedAddress, setDerivedAddress] = useState<string>("null");
   const [balance, setBalance] = useState<string>("");
@@ -19,7 +19,7 @@ const WalletManager: React.FC = () => {
       console.log("Calling createWallet()");
       const wallet = await createWallet({
         seedPhrase: true,
-        environment: ENVIRONMENT,
+        environment: env === "mainnet" ? "mainnet" : "local",
       });
       setWallet(wallet);
     } catch {
@@ -38,7 +38,7 @@ const WalletManager: React.FC = () => {
               e: "",
               n: "",
             },
-        environment: ENVIRONMENT,
+        environment: env === "mainnet" ? "mainnet" : "local",
       });
       setDerivedAddress(checkedAddress);
       //   setClickedBalance(false);
@@ -52,7 +52,7 @@ const WalletManager: React.FC = () => {
       console.log("Calling getBalance()");
       const balanceChecked = await getBalance({
         address: wallet ? wallet.walletAddress : "",
-        environment: ENVIRONMENT,
+        environment: env === "mainnet" ? "mainnet" : "local",
       });
       setBalance(balanceChecked);
       //   setClickedBalance(false);
