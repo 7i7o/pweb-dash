@@ -7,7 +7,7 @@ import { usePWebContext } from "~/context/pweb";
 const WalletManager: React.FC = () => {
   const { wallet, setWallet, env } = usePWebContext();
 
-  const [derivedAddress, setDerivedAddress] = useState<string>("null");
+  const [derivedAddress, setDerivedAddress] = useState<string>("");
   const [balance, setBalance] = useState<string>("");
 
   const [clicked, setClicked] = useState<boolean>(false);
@@ -101,6 +101,10 @@ const WalletManager: React.FC = () => {
                     disabled={!clicked}
                     onClick={() => {
                       setClicked(false);
+                      setClickedAddress(false);
+                      setClickedBalance(false);
+                      setDerivedAddress("");
+                      setBalance("");
                       setWallet(null);
                     }}
                   >
