@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { usePWebContext } from "~/context/pweb";
 import {
   createTransaction,
+  getTransactionStatus,
   postTransaction,
   signTransaction,
 } from "permawebjs/transaction";
@@ -18,9 +19,12 @@ const TxManager: React.FC = () => {
   const [signedTx, setSignedTx] = useState<any | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const [postedTx, setPostedTx] = useState<any | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const [txStatus, setTxStatus] = useState<any | null>(null);
   const [clickedCreate, setClickedCreate] = useState<boolean>(false);
   const [clickedSign, setClickedSign] = useState<boolean>(false);
   const [clickedPost, setClickedPost] = useState<boolean>(false);
+  const [clickedTxStatus, setClickedTxStatus] = useState<boolean>(false);
   const [amount, setAmount] = useState<string>("");
   const [target, setTarget] = useState<string>(TARGET_ADDRESS);
 
@@ -93,6 +97,21 @@ const TxManager: React.FC = () => {
     }
   };
 
+  const getStatusTx = async () => {
+    try {
+      console.log("Calling getTransactionStatus()");
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      const txStatusResponse = await getTransactionStatus({
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
+        transactionId: tx.id,
+        environment: env === "mainnet" ? "mainnet" : "local",
+      });
+      setTxStatus(txStatusResponse);
+    } catch {
+      console.log("Couldn't get transaction status");
+    }
+  };
+
   const handleAmount = (e: React.ChangeEvent<HTMLInputElement>) => {
     let result = e.target.value.replace(/\D/g, "");
     if (result) {
@@ -108,7 +127,13 @@ const TxManager: React.FC = () => {
   return (
     <div className="container mx-auto mt-0">
       <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
+        {/* createSign&PostTransaction() */}
+        {/* <h3 className="col-span-4 text-2xl">One-Step Transaction</h3> */}
+
         {/* createTransaction() */}
+        <h3 className="col-span-4 text-2xl">
+          Step by Step (Create, Sign & Post)
+        </h3>
         <div className="form-control col-span-1 w-full max-w-xs">
           <label className="label">
             <span className="label-text">Amount</span>
@@ -265,6 +290,39 @@ const TxManager: React.FC = () => {
                     {/* <br />
                     <strong className="break-all">{JSON.stringify(tx)}</strong> */}
                   </p>
+                  <div className="dropdown dropdown-bottom">
+                    <label
+                      tabIndex={0}
+                      className="btn-ghost btn-xs btn-circle btn text-info"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        className="h-4 w-4 stroke-current"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        ></path>
+                      </svg>
+                    </label>
+                    <div
+                      tabIndex={0}
+                      className="card dropdown-content compact rounded-box w-80 bg-base-100 shadow"
+                    >
+                      <div className="card-body">
+                        <h2 className="card-title">Tx Info</h2>
+                        <p>
+                          <span className="break-all">
+                            {JSON.stringify(tx)}
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
@@ -280,40 +338,41 @@ const TxManager: React.FC = () => {
                     <strong className="break-all">
                       {JSON.stringify(postedTx)}
                     </strong>
+                    <br />
+                    <button
+                      className="btn-primary btn col-span-1 mx-1 w-full"
+                      disabled={
+                        !wallet ||
+                        !clickedCreate ||
+                        !tx ||
+                        !clickedSign ||
+                        !signedTx ||
+                        !postedTx
+                      }
+                      onClick={() => {
+                        setClickedTxStatus(true);
+                        void getStatusTx();
+                      }}
+                    >
+                      Get Tx Status
+                    </button>
                   </p>
-                  {/* <button
-                    className="btn col-span-1 mx-1 w-full"
-                    disabled={
-                      !wallet ||
-                      !clickedCreate ||
-                      !tx ||
-                      !clickedSign ||
-                      !signedTx
-                    }
-                    onClick={() => {
-                      setClickedSign(false);
-                      setClickedCreate(false);
-                      // setAmount("0");
-                    }}
-                  >
-                    Reset
-                  </button>
-                  <button
-                    className="btn-primary btn col-span-1 mx-1 w-full"
-                    disabled={
-                      !wallet ||
-                      !clickedCreate ||
-                      !tx ||
-                      !clickedSign ||
-                      !signedTx
-                    }
-                    onClick={() => {
-                      setClickedPost(true);
-                      void postTx();
-                    }}
-                  >
-                    Post
-                  </button> */}
+                </div>
+              )}
+            </div>
+          )}
+          {clickedTxStatus && (
+            <div className="card rounded-lg bg-base-200 p-4">
+              {!txStatus && <progress className="progress w-56"></progress>}
+              {txStatus && (
+                <div className="grid grid-cols-2 gap-1">
+                  <p className="col-span-2">
+                    Tx Status:
+                    <br />
+                    <strong className="break-all">
+                      {JSON.stringify(txStatus)}
+                    </strong>
+                  </p>
                 </div>
               )}
             </div>

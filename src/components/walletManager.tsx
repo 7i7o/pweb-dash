@@ -84,18 +84,49 @@ const WalletManager: React.FC = () => {
               {wallet && (
                 <>
                   <p className="w-64">
-                    Your new wallet:&nbsp;
-                    <strong className="break-all">
-                      {wallet.walletAddress}
-                    </strong>
+                    You are using a new wallet
+                    <div className="dropdown dropdown-bottom">
+                      <label
+                        tabIndex={0}
+                        className="btn-ghost btn-xs btn-circle btn text-info"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          className="h-4 w-4 stroke-current"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                          ></path>
+                        </svg>
+                      </label>
+                      <div
+                        tabIndex={0}
+                        className="card dropdown-content compact rounded-box w-64 bg-base-100 shadow"
+                      >
+                        <div className="card-body">
+                          <h2 className="card-title">Wallet Info</h2>
+                          <p>
+                            Address:{" "}
+                            <strong className="break-all">
+                              {wallet.walletAddress}
+                            </strong>
+                          </p>
+                          {/* {wallet.seedPhrase && (
+                            <p className="mb-2 w-64">
+                              Your wallet seed phrase is:
+                              <br />
+                              <code>{wallet.seedPhrase}</code>
+                            </p>
+                          )} */}
+                        </div>
+                      </div>
+                    </div>
                   </p>
-                  {/* {wallet.seedPhrase && (
-                    <p className="mb-2 w-64">
-                      Your wallet seed phrase is:
-                      <br />
-                      <code>{wallet.seedPhrase}</code>
-                    </p>
-                  )} */}
                   <button
                     className="btn-outline btn-sm btn w-full"
                     disabled={!clicked}
