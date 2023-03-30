@@ -27,6 +27,8 @@ const PERMS: Permissions[] = [
 enum ActionType {
   ADD = "ADD",
   REMOVE = "REMOVE",
+  ADD_ALL = "ADD_ALL",
+  REMOVE_ALL = "REMOVE_ALL",
 }
 
 interface Action {
@@ -72,6 +74,14 @@ const Auth = () => {
         return {
           ...prevState,
           perms: prevState.perms.filter((e) => e !== payload),
+        };
+      case ActionType.ADD_ALL:
+        return {
+          perms: PERMS,
+        };
+      case ActionType.REMOVE_ALL:
+        return {
+          perms: [],
         };
       default:
         return prevState;
@@ -198,16 +208,41 @@ const Auth = () => {
               <div className="grid grid-cols-2 gap-6 md:grid-cols-2">
                 {/* <div className="col-span-2">{JSON.stringify(state.perms)}</div> */}
                 <div className="form-control col-span-2">
-                  <div className="grid w-fit grid-cols-3 gap-x-32 gap-y-3 ">
+                  <div className="grid w-fit grid-cols-2 gap-x-32 gap-y-3">
+                    <label
+                      className="label col-span-1 flex cursor-pointer flex-row items-start"
+                      key={-1}
+                    >
+                      <span className="drop-shadow-xs label-text text-left text-white">
+                        All Permissions
+                      </span>
+                      <input
+                        type="checkbox"
+                        checked={state.perms.length === PERMS.length}
+                        className="checkbox-primary checkbox ml-2"
+                        onChange={(e) => {
+                          dispatch({
+                            type: e.target.checked
+                              ? ActionType.ADD_ALL
+                              : ActionType.REMOVE_ALL,
+                            payload: "ACCESS_ADDRESS",
+                          });
+                        }}
+                      />
+                    </label>
+
                     {PERMS.map((p, i) => (
                       <label
                         className="label col-span-1 flex cursor-pointer flex-row items-start"
                         key={i}
                       >
+                        <span className="drop-shadow-xs label-text text-left text-white">
+                          {p}
+                        </span>
                         <input
                           type="checkbox"
                           checked={state.perms.includes(p)}
-                          className="checkbox-primary checkbox"
+                          className="checkbox-primary checkbox ml-2"
                           onChange={(e) => {
                             dispatch({
                               type: e.target.checked
@@ -217,7 +252,6 @@ const Auth = () => {
                             });
                           }}
                         />
-                        <span className="label-text">{p}</span>
                       </label>
                     ))}
                   </div>
@@ -292,7 +326,7 @@ const Auth = () => {
                 </div>
                 <div className="col-span-1">
                   <span className="font-bold text-white drop-shadow-sm">
-                    {JSON.stringify(permissions)}
+                    {permissions.length ? JSON.stringify(permissions) : ""}
                   </span>
                 </div>
               </div>
@@ -313,7 +347,7 @@ const Auth = () => {
                 </div>
                 <div className="col-span-1">
                   <span className="font-bold text-white drop-shadow-sm">
-                    {JSON.stringify(walletNames)}
+                    {walletNames.length ? JSON.stringify(walletNames) : ""}
                   </span>
                 </div>
               </div>
@@ -334,7 +368,7 @@ const Auth = () => {
                 </div>
                 <div className="col-span-1">
                   <span className="font-bold text-white drop-shadow-sm">
-                    {JSON.stringify(allAddresses)}
+                    {allAddresses.length ? JSON.stringify(allAddresses) : ""}
                   </span>
                 </div>
               </div>
@@ -355,7 +389,9 @@ const Auth = () => {
                 </div>
                 <div className="col-span-1">
                   <span className="font-bold text-white drop-shadow-sm">
-                    {JSON.stringify(activePublicKey)}
+                    {activePublicKey.length
+                      ? JSON.stringify(activePublicKey)
+                      : ""}
                   </span>
                 </div>
               </div>
