@@ -1,9 +1,4 @@
-import {
-  ReducerAction,
-  ReducerWithoutAction,
-  useReducer,
-  useState,
-} from "react";
+import { useReducer, useState } from "react";
 import { ArConnect } from "permawebjs/auth";
 
 const PERMS = [
@@ -35,7 +30,7 @@ interface State {
 const Auth = () => {
   const [clicked, setClicked] = useState(false);
   const [clickedDisconnect, setClickedDisconnect] = useState(false);
-  const [connection, setConnection] = useState(null);
+  //   const [connection, setConnection] = useState(null);
 
   const permissionsReducer = (prevState: State, action: Action): State => {
     const { type, payload } = action;
