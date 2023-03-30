@@ -42,7 +42,11 @@ const Auth = () => {
   const [hasArConnect, setHasArConnect] = useState(false);
   const [clicked, setClicked] = useState(false);
   const [clickedDisconnect, setClickedDisconnect] = useState(false);
-  //   const [connection, setConnection] = useState(null);
+  const [activeAddress, setActiveAddress] = useState("");
+  const [permissions, setPermissions] = useState([]);
+  const [walletNames, setWalletNames] = useState([]);
+  const [allAddresses, setAllAddresses] = useState([]);
+  const [activePublicKey, setActivePublicKey] = useState([]);
 
   useEffect(() => {
     async function checkInstalled() {
@@ -100,11 +104,73 @@ const Auth = () => {
       console.log(JSON.stringify(response));
 
       //   setConnection(response);
+      setActiveAddress("");
       setClickedDisconnect(false);
     } catch (err) {
       console.log("Couldn't disconnect wallet");
       console.log(err);
       setClickedDisconnect(false);
+    }
+  };
+
+  const getActiveAddress = async () => {
+    try {
+      console.log("Calling getActiveAddress()");
+      const response = await ArConnect.getActiveAddress();
+      console.log(JSON.stringify(response));
+      setActiveAddress(response);
+    } catch (err) {
+      console.log("Couldn't getActiveAddress");
+      setActiveAddress("");
+      console.log(err);
+    }
+  };
+  const getPermissions = async () => {
+    try {
+      console.log("Calling getPermissions()");
+      const response = await ArConnect.getPermissions();
+      console.log(JSON.stringify(response));
+      setPermissions(response);
+    } catch (err) {
+      console.log("Couldn't getPermissions");
+      setPermissions([]);
+      console.log(err);
+    }
+  };
+  const getWalletNames = async () => {
+    try {
+      console.log("Calling getWalletNames()");
+      const response = await ArConnect.getWalletNames();
+      console.log(JSON.stringify(response));
+      setWalletNames(response);
+    } catch (err) {
+      console.log("Couldn't getWalletNames");
+      setWalletNames([]);
+      console.log(err);
+    }
+  };
+  const getAllAddresses = async () => {
+    try {
+      console.log("Calling getAllAddresses()");
+      const response = await ArConnect.getAllAddresses();
+      console.log(JSON.stringify(response));
+      setAllAddresses(response);
+    } catch (err) {
+      console.log("Couldn't getAllAddresses");
+      setAllAddresses([]);
+      console.log(err);
+    }
+  };
+  const getActivePublicKey = async () => {
+    try {
+      console.log("Calling getActivePublicKey()");
+      const response = await ArConnect.getActivePublicKey();
+      console.log(JSON.stringify(response));
+      setActivePublicKey(response);
+    } catch (err) {
+      console.log("Couldn't getActivePublicKey");
+      setActivePublicKey([]);
+      console.log(err);
     }
   };
 
@@ -175,6 +241,118 @@ const Auth = () => {
                   >
                     Disconnect
                   </button>
+                </div>
+              </div>
+            </>
+          </div>
+          <h2 className="text-3xl font-extrabold tracking-tight text-white drop-shadow-md sm:text-[3rem]">
+            Check Connection Permissions
+          </h2>
+          <div className="container mx-auto mt-0">
+            <>
+              <h3 className="text-xl font-extrabold tracking-tight text-gray-300 drop-shadow-md sm:text-[1rem]">
+                getActiveAddress
+              </h3>
+              <div className="grid grid-cols-2 items-center gap-6 md:grid-cols-2">
+                <div className="col-span-1">
+                  <button
+                    className="btn-primary btn w-full"
+                    disabled={clicked}
+                    onClick={() => {
+                      void getActiveAddress();
+                    }}
+                  >
+                    getActiveAddress
+                  </button>
+                </div>
+                <div className="col-span-1">
+                  <span className="font-bold text-white drop-shadow-sm">
+                    {activeAddress}
+                  </span>
+                </div>
+              </div>
+              <h3 className="mt-6 text-xl font-extrabold tracking-tight text-gray-300 drop-shadow-md sm:text-[1rem]">
+                getPermissions
+              </h3>
+              <div className="grid grid-cols-2 gap-6 md:grid-cols-2">
+                <div className="col-span-1">
+                  <button
+                    className="btn-primary btn w-full"
+                    disabled={clicked}
+                    onClick={() => {
+                      void getPermissions();
+                    }}
+                  >
+                    getPermissions
+                  </button>
+                </div>
+                <div className="col-span-1">
+                  <span className="font-bold text-white drop-shadow-sm">
+                    {JSON.stringify(permissions)}
+                  </span>
+                </div>
+              </div>
+              <h3 className="mt-6 text-xl font-extrabold tracking-tight text-gray-300 drop-shadow-md sm:text-[1rem]">
+                getWalletNames
+              </h3>
+              <div className="grid grid-cols-2 gap-6 md:grid-cols-2">
+                <div className="col-span-1">
+                  <button
+                    className="btn-primary btn w-full"
+                    disabled={clicked}
+                    onClick={() => {
+                      void getWalletNames();
+                    }}
+                  >
+                    getwalletNames
+                  </button>
+                </div>
+                <div className="col-span-1">
+                  <span className="font-bold text-white drop-shadow-sm">
+                    {JSON.stringify(walletNames)}
+                  </span>
+                </div>
+              </div>
+              <h3 className="mt-6 text-xl font-extrabold tracking-tight text-gray-300 drop-shadow-md sm:text-[1rem]">
+                getAllAddresses
+              </h3>
+              <div className="grid grid-cols-2 gap-6 md:grid-cols-2">
+                <div className="col-span-1">
+                  <button
+                    className="btn-primary btn w-full"
+                    disabled={clicked}
+                    onClick={() => {
+                      void getAllAddresses();
+                    }}
+                  >
+                    getAllAddresses
+                  </button>
+                </div>
+                <div className="col-span-1">
+                  <span className="font-bold text-white drop-shadow-sm">
+                    {JSON.stringify(allAddresses)}
+                  </span>
+                </div>
+              </div>
+              <h3 className="mt-6 text-xl font-extrabold tracking-tight text-gray-300 drop-shadow-md sm:text-[1rem]">
+                getActivePublicKey
+              </h3>
+              <div className="grid grid-cols-2 gap-6 md:grid-cols-2">
+                <div className="col-span-1">
+                  <button
+                    className="btn-primary btn w-full"
+                    disabled={clicked}
+                    onClick={() => {
+                      void getActivePublicKey();
+                    }}
+                  >
+                    getActivePublicKey
+                  </button>
+                </div>
+                <div className="col-span-1">
+                  <span className="font-bold text-white drop-shadow-sm">
+                    {JSON.stringify(activePublicKey)}
+                  </span>
                 </div>
               </div>
             </>
