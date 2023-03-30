@@ -53,6 +53,9 @@ const WalletManager: React.FC = () => {
       const balanceChecked = await getBalance({
         address: wallet ? wallet.walletAddress : "",
         environment: env === "mainnet" ? "mainnet" : "local",
+        options: {
+          winston: true,
+        },
       });
       setBalance(balanceChecked);
       //   setClickedBalance(false);

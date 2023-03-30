@@ -33,6 +33,8 @@ const TxManager: React.FC = () => {
       console.log("Calling createTransaction()");
       const txPromise = await createTransaction({
         type: "wallet",
+        // type: "data",
+        // data: " >>> --- 7i7o --- <<< ",
         quantity: amount,
         target: TARGET_ADDRESS,
         key: wallet
@@ -44,7 +46,8 @@ const TxManager: React.FC = () => {
             },
         environment: env === "mainnet" ? "mainnet" : "local",
         // options: {
-        //   signAndPost: true,
+        // signAndPost: true,
+        // useBundlr: true,
         // },
       });
       setTx(txPromise);
@@ -257,6 +260,39 @@ const TxManager: React.FC = () => {
                       Post
                     </button>
                   )}
+                  <div className="dropdown dropdown-bottom">
+                    <label
+                      tabIndex={0}
+                      className="btn-ghost btn-xs btn-circle btn text-info"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        className="h-4 w-4 stroke-current"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                        ></path>
+                      </svg>
+                    </label>
+                    <div
+                      tabIndex={0}
+                      className="card dropdown-content compact rounded-box w-80 bg-base-100 shadow"
+                    >
+                      <div className="card-body">
+                        <h2 className="card-title">Tx Info</h2>
+                        <p>
+                          <span className="break-all">
+                            {JSON.stringify(tx)}
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                   <p className="col-span-2">
                     Tx Id:{" "}
                     <strong className="break-all">
@@ -300,39 +336,6 @@ const TxManager: React.FC = () => {
                     {/* <br />
                     <strong className="break-all">{JSON.stringify(tx)}</strong> */}
                   </p>
-                  <div className="dropdown dropdown-bottom">
-                    <label
-                      tabIndex={0}
-                      className="btn-ghost btn-xs btn-circle btn text-info"
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        className="h-4 w-4 stroke-current"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                        ></path>
-                      </svg>
-                    </label>
-                    <div
-                      tabIndex={0}
-                      className="card dropdown-content compact rounded-box w-80 bg-base-100 shadow"
-                    >
-                      <div className="card-body">
-                        <h2 className="card-title">Tx Info</h2>
-                        <p>
-                          <span className="break-all">
-                            {JSON.stringify(tx)}
-                          </span>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               )}
             </div>

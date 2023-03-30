@@ -1,10 +1,60 @@
-import { useState } from "react";
+import {
+  ReducerAction,
+  ReducerWithoutAction,
+  useReducer,
+  useState,
+} from "react";
 import { ArConnect } from "permawebjs/auth";
+
+const PERMS = [
+  "ACCESS_ADDRESS",
+  "ACCESS_PUBLIC_KEY",
+  "ACCESS_ALL_ADDRESSES",
+  "SIGN_TRANSACTION",
+  "DISPATCH",
+  "ENCRYPT",
+  "DECRYPT",
+  "SIGNATURE",
+  "ACCESS_ARWEAVE_CONFIG",
+];
+
+enum ActionType {
+  ADD = "ADD",
+  REMOVE = "REMOVE",
+}
+
+interface Action {
+  type: ActionType;
+  payload: string;
+}
+
+interface State {
+  perms: string[];
+}
 
 const Auth = () => {
   const [clicked, setClicked] = useState(false);
   const [clickedDisconnect, setClickedDisconnect] = useState(false);
   const [connection, setConnection] = useState(null);
+
+  const permissionsReducer = (prevState: State, action: Action): State => {
+    const { type, payload } = action;
+    switch (type) {
+      case ActionType.ADD:
+        return {
+          ...prevState,
+          perms: [payload, ...prevState.perms],
+        };
+      case ActionType.REMOVE:
+        return {
+          ...prevState,
+          perms: prevState.perms.filter((e) => e !== payload),
+        };
+      default:
+        return prevState;
+    }
+  };
+  const [state, dispatch] = useReducer(permissionsReducer, { perms: [] });
 
   const connectWallet = async () => {
     try {
@@ -23,6 +73,7 @@ const Auth = () => {
       setClicked(false);
     }
   };
+
   const disconnectWallet = async () => {
     try {
       console.log("Calling disconnect()");
@@ -44,8 +95,36 @@ const Auth = () => {
         Connection
       </h2>
       <div className="container mx-auto mt-0">
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          {/* createWallet() */}
+        <h3 className="text-xl font-extrabold tracking-tight text-gray-300 drop-shadow-md sm:text-[1rem]">
+          Permissions
+        </h3>
+        <div className="grid grid-cols-2 gap-6 md:grid-cols-2">
+          {/* <div className="col-span-2">{JSON.stringify(state.perms)}</div> */}
+          <div className="form-control col-span-2">
+            <div className="grid w-fit grid-cols-3 gap-x-32 gap-y-3 ">
+              {PERMS.map((p, i) => (
+                <label
+                  className="label col-span-1 flex cursor-pointer flex-row items-start"
+                  key={i}
+                >
+                  <input
+                    type="checkbox"
+                    checked={state.perms.includes(p)}
+                    className="checkbox-primary checkbox"
+                    onChange={(e) => {
+                      dispatch({
+                        type: e.target.checked
+                          ? ActionType.ADD
+                          : ActionType.REMOVE,
+                        payload: p,
+                      });
+                    }}
+                  />
+                  <span className="label-text">{p}</span>
+                </label>
+              ))}
+            </div>
+          </div>
           <div className="col-span-1">
             <button
               className="btn-primary btn w-full"
@@ -57,6 +136,8 @@ const Auth = () => {
             >
               Connect
             </button>
+          </div>
+          <div className="col-span-1">
             <button
               className="btn-outline btn w-full"
               disabled={clickedDisconnect}
@@ -73,4 +154,5 @@ const Auth = () => {
     </>
   );
 };
+
 export default Auth;
