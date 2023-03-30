@@ -105,6 +105,10 @@ const Auth = () => {
 
       //   setConnection(response);
       setActiveAddress("");
+      setPermissions([]);
+      setWalletNames([]);
+      setAllAddresses([]);
+      setActivePublicKey([]);
       setClickedDisconnect(false);
     } catch (err) {
       console.log("Couldn't disconnect wallet");
